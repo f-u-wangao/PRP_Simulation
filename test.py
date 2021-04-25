@@ -17,3 +17,7 @@ from game_logic import GameLogic
 game = GameLogic()
 game.move(0, 1)
 game.show()
+
+# %%
+for i in range(0):
+    print(i)

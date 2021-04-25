@@ -6,7 +6,9 @@ import win32con
 
 class GameLogic:
 
-    def __init__(self):
+    def __init__(self, stats):
+        self.settings_vis = Settings()
+        self.stats = stats
         self.chessboard = np.zeros([30, 30], dtype=int)
         self.ship_self = {'location': np.array([29, 29], dtype=int), 'missile': 4}
         self.ship_enemy = {'location': np.array([0, 0], dtype=int), 'missile': 4}
@@ -21,7 +23,6 @@ class GameLogic:
             ship = self.ship_self
         return ship
 
-    # 返回移动是否成功
     def move(self, ship_number, direction):
         """
         :param ship_number: 0 代表对敌机操作，1 代表对己方飞机操作
@@ -50,10 +51,36 @@ class GameLogic:
                 flag_is_moved = True
         else:
             win32api.MessageBox(0, "输入的 direction 无效，可能影响程序运行！", "警告", win32con.MB_ICONWARNING)
+        self.stats.next_operation()
         return flag_is_moved
 
     def launch(self, ship_number):
+        """
+        :param ship_number: 0 代表导弹属于敌机，1 代表导弹属于己方飞机
+        """
+
         ship = self.get_ship(ship_number)
+
+        if ship['missile'] >= 1:
+            ship['missile'] -= 1
+
+        self.stats.next_operation()
+
+    def trace(self, ship_number, missile_number):
+        """
+        :param ship_number: 0 代表导弹属于敌机，1 代表导弹属于己方飞机
+        :param missile_number: 用 0 ~ 3 表示
+        :return: 游戏是否结束，即是否有飞机被导弹击中，若有，根据operation即可判断胜利方
+        """
+        game_over = False
+        ship = self.get_ship(ship_number)
+
+        if ship_number:
+            pass
+        else:
+            pass
+
+        return game_over
 
     def show(self):
         print("chessboard:\n", self.chessboard)
