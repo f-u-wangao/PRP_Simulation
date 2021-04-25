@@ -5,11 +5,13 @@ from missile import Missile
 
 def check_keydown_events(event, screen, settings_vis, stats, ship_self, ship_enemy, missiles, game_logic):
     ship_speed = settings_vis.ship_speed
+    width_left = settings_vis.width_left + screen.get_rect().left
+    width_top = screen.get_rect().top
     if stats.operation == 1:
-        if event.key == pygame.K_LEFT and ship_self.rect.left >= ship_speed:
+        if event.key == pygame.K_LEFT and ship_self.rect.left >= ship_speed + width_left:
             ship_self.rect.centerx -= ship_speed
             game_logic.move(1, 3)
-        elif event.key == pygame.K_RIGHT and ship_self.rect.right <= settings_vis.screen_width - ship_speed:
+        elif event.key == pygame.K_RIGHT and ship_self.rect.right <= width_left + 29 * settings_vis.cell_width:
             ship_self.rect.centerx += ship_speed
             game_logic.move(1, 4)
         elif event.key == pygame.K_UP and ship_self.rect.top >= ship_speed:
@@ -19,16 +21,16 @@ def check_keydown_events(event, screen, settings_vis, stats, ship_self, ship_ene
             ship_self.rect.centery += ship_speed
             game_logic.move(1, 2)
     elif stats.operation == 2:
-        if event.key == pygame.K_LEFT and ship_enemy.rect.left >= ship_speed:
+        if event.key == pygame.K_LEFT and ship_enemy.rect.left >= ship_speed + width_left:
             ship_enemy.rect.centerx -= ship_speed
             game_logic.move(0, 3)
-        elif event.key == pygame.K_RIGHT and ship_enemy.rect.right <= settings_vis.screen_width - ship_speed:
+        elif event.key == pygame.K_RIGHT and ship_enemy.rect.right <= width_left + 29 * settings_vis.cell_width:
             ship_enemy.rect.centerx += ship_speed
             game_logic.move(0, 4)
-        elif event.key == pygame.K_UP and ship_enemy.rect.top >= ship_speed:
+        elif event.key == pygame.K_UP and ship_enemy.rect.top >= width_top + ship_speed:
             ship_enemy.rect.centery -= ship_speed
             game_logic.move(0, 1)
-        elif event.key == pygame.K_DOWN and ship_enemy.rect.bottom <= settings_vis.screen_height - ship_speed:
+        elif event.key == pygame.K_DOWN and ship_enemy.rect.bottom <= width_top + 29 * settings_vis.cell_height:
             ship_enemy.rect.centery += ship_speed
             game_logic.move(0, 2)
     elif stats.operation == 3:
