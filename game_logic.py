@@ -1,3 +1,4 @@
+from settings import Settings
 import numpy as np
 import win32api
 import win32con
@@ -22,10 +23,15 @@ class GameLogic:
 
     # 返回移动是否成功
     def move(self, ship_number, direction):
+        """
+        :param ship_number: 0 代表对敌机操作，1 代表对己方飞机操作
+        :param direction: 1, 2, 3, 4 分别对应 上，下，左，右
+        :return: move 操作是否成功
+        """
+
         ship = self.get_ship(ship_number)
         flag_is_moved = False
 
-        # 1, 2, 3, 4 分别对应 上，下，左，右
         if direction == 1:
             if ship['location'][1] >= 1:
                 ship['location'][1] -= 1

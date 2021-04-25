@@ -47,21 +47,24 @@ def check_play_button(stats, play_button, mouse_x, mouse_y, ship, missiles):
         missiles.empty()
 
 
-def update_screen(settings_vis, screen, stats, ship_self, ship_enemy, missiles_self, missiles_enemy, play_button,
+def update_screen(settings_vis, screen, stats, board, ship_self, ship_enemy, missiles_self, missiles_enemy, play_button,
                   background):
     screen.fill(settings_vis.background_color)
     for missile in missiles_self.sprites():
         missile.draw_missile()
     for missile in missiles_enemy.sprites():
         missile.draw_missile()
-    ship_self.blitme()
-    ship_enemy.blitme()
 
     if not stats.game_active:
         background.draw_grid(0)
         play_button.draw_button()
+        ship_self.blitme(0)
+        ship_enemy.blitme(0)
     else:
         background.draw_grid(1)
+        ship_self.blitme(1)
+        ship_enemy.blitme(1)
+        board.show()
     pygame.display.flip()
 
 

@@ -6,6 +6,7 @@ from background import Background
 from pygame.sprite import Group
 from game_stats import GameStats
 from button import Button
+from board import Board
 
 
 def run_game():
@@ -33,15 +34,16 @@ def run_game():
     missiles_self = Group()
     missiles_enemy = Group()
 
-    # 创建存储统计信息的实例
-    stats = GameStats(settings_vis)
+    # 创建存储统计信息的实例，并在右侧显示
+    stats = GameStats()
+    board = Board(screen, stats)
 
     # 游戏主循环
     while True:
         gf.check_events(settings_vis, screen, stats, play_button, ship_self, missiles_self)
         missiles_self.update()
-        gf.update_screen(settings_vis, screen, stats, ship_self, ship_enemy, missiles_self, missiles_enemy, play_button,
-                         background)
+        gf.update_screen(settings_vis, screen, stats, board, ship_self, ship_enemy, missiles_self, missiles_enemy,
+                         play_button, background)
 
 
 run_game()
