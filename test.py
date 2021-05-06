@@ -21,3 +21,23 @@ game.show()
 # %%
 for i in range(0):
     print(i)
+
+# %%
+import numpy as np
+
+a = np.array([1, 2], dtype=int)
+b = {}
+b[1] = a
+c = b[1]
+c = np.array([3, 4], dtype=int)
+print(b)
+
+a = np.random.random()
+print(a)
+
+# %%
+from pygame.sprite import Group
+
+a = []
+a.append(1)
+print(len(a))

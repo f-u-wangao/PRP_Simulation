@@ -6,10 +6,11 @@ class Settings:
         self.background_color = (230, 230, 230)
         self.text_color = (30, 30, 30)
 
-        self.missile_speed = 1
-        self.missile_width = 3
+        self.missile_speed = 30
+        self.missile_width = 10
         self.missile_height = 15
-        self.missile_color = 60, 60, 60
+        self.missile_self_color = 17, 160, 255
+        self.missile_enemy_color = 226, 63, 226
         self.missile_allowed = 4
 
         self.button_color = 0, 200, 0

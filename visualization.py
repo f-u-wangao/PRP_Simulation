@@ -32,8 +32,8 @@ def run_game():
     ship_enemy = Ship(screen, 1)
 
     # 创建双方飞船导弹组
-    missiles_self = Group()
-    missiles_enemy = Group()
+    missiles_self = []
+    missiles_enemy = []
 
     # 创建存储统计信息的实例，导入游戏逻辑，并在右侧显示
     stats = GameStats()
@@ -42,8 +42,8 @@ def run_game():
 
     # 游戏主循环
     while True:
-        gf.check_events(settings_vis, screen, stats, play_button, ship_self, ship_enemy, missiles_self, game_logic)
-        missiles_self.update()
+        gf.check_events(settings_vis, screen, stats, play_button, ship_self, ship_enemy, missiles_self, missiles_enemy,
+                        game_logic)
         gf.update_screen(settings_vis, screen, stats, board, ship_self, ship_enemy, missiles_self, missiles_enemy,
                          play_button, background)
 
