@@ -3,6 +3,7 @@ import numpy as np
 import win32api
 import win32con
 import copy
+from Agents.Demo import Agent
 
 
 class GameLogic:
@@ -10,11 +11,13 @@ class GameLogic:
     def __init__(self, stats):
         self.settings_vis = Settings()
         self.stats = stats
-        self.chessboard = np.zeros([30, 30], dtype=int)
         self.ship_self = {'location': np.array([29, 29], dtype=int), 'missile': 4}
         self.ship_enemy = {'location': np.array([0, 0], dtype=int), 'missile': 4}
         self.missile_location = [{}, {}]
         self.missile_travelled = [{}, {}]
+        self.control_flag = self.settings_vis.control_flag
+        if not self.control_flag:
+            self.agent = [Agent(), Agent()]  # 0 - enemy, 1 - self
 
     def get_ship(self, ship_number):
         if ship_number == 1:
@@ -56,6 +59,10 @@ class GameLogic:
             win32api.MessageBox(0, "输入的 direction 无效，可能影响程序运行！", "警告", win32con.MB_ICONWARNING)
         self.stats.next_operation()
 
+        if not self.control_flag:
+            for i in range(2):
+                self.agent[i].update_ship_location(ship_number, ship['location'])
+
         # print("ship_number:", ship_number, "direction", direction, "ship_location:", ship['location'])
         return flag_is_moved
 
@@ -84,12 +91,15 @@ class GameLogic:
         self_location = self.missile_location[ship_number][missile_number]
         action = [0, 0]
 
+        if self.missile_travelled[ship_number][missile_number] == -1:
+            return game_over, action
+
         # print("goal_location:", goal_location, "self_location:", self_location)
         distance = abs(goal_location[0] - self_location[0]) + abs(goal_location[1] - self_location[1])
         if distance <= 2:
+            game_over = self.is_hit(self.missile_travelled[ship_number][missile_number] + distance)
             self.missile_location[ship_number][missile_number] = np.array([-1, -1], dtype=int)
             self.missile_travelled[ship_number][missile_number] = -1
-            game_over = self.is_hit(self.missile_travelled[ship_number][missile_number] + distance)
             return game_over, action
 
         if self.missile_travelled[ship_number][missile_number] >= 20:
@@ -116,6 +126,20 @@ class GameLogic:
                 action[i] = 3 - 2 * choose_number
             self.missile_travelled[ship_number][missile_number] += 1
 
+        if not self.control_flag:
+            for i in range(2):
+                if i == ship_number:
+                    self.agent[ship_number].update_missile_location(ship_number, missile_number,
+                                                                    self.missile_location[ship_number][missile_number])
+                elif distance <= self.settings_vis.missile_view:
+                    self.agent[ship_number].update_missile_location(ship_number, missile_number,
+                                                                    self.missile_location[ship_number][missile_number])
+                if game_over:
+                    if i == ship_number:
+                        self.agent[ship_number].update_win_or_lose(1)
+                    else:
+                        self.agent[ship_number].update_win_or_lose(-1)
+
         # print("ship_number:", ship_number, "missile_number:", missile_number)
         # print("\tmissile_location:", self.missile_location[ship_number][missile_number])
         # print("\tmissile_travelled:", self.missile_travelled[ship_number][missile_number])
@@ -123,14 +147,24 @@ class GameLogic:
 
     def is_hit(self, missile_travelled):
         if missile_travelled <= 2:
+            print("Hit! Too near.")
             return True
         else:
             tmp = np.random.random()
             if tmp > missile_travelled / 20 - 0.1:
+                print("Hit! p =", 1.1 - missile_travelled / 20)
                 return True
+        print("Miss! p =", 1.1 - missile_travelled / 20)
         return False
 
     def show(self):
-        print("chessboard:\n", self.chessboard)
         print("ship_self: location: ", self.ship_self['location'], "\tmissile:", self.ship_self['missile'])
         print("ship_enemy: location: ", self.ship_enemy['location'], "\tmissile:", self.ship_enemy['missile'])
+
+    def reset(self):
+        self.ship_self = {'location': np.array([29, 29], dtype=int), 'missile': 4}
+        self.ship_enemy = {'location': np.array([0, 0], dtype=int), 'missile': 4}
+        self.missile_location = [{}, {}]
+        self.missile_travelled = [{}, {}]
+        if not self.control_flag:
+            self.agent = [Agent(), Agent()]  # 0 - enemy, 1 - self

@@ -22,15 +22,16 @@ class Missile(Sprite):
     def update(self, action):
         if action == [0, 0]:
             self.is_show = False
-        for i in range(2):
-            if action[i] == 1:
-                self.rect.y -= self.speed
-            elif action[i] == 2:
-                self.rect.y += self.speed
-            elif action[i] == 3:
-                self.rect.x -= self.speed
-            elif action[i] == 4:
-                self.rect.x += self.speed
+        else:
+            for i in range(2):
+                if action[i] == 1:
+                    self.rect.y -= self.speed
+                elif action[i] == 2:
+                    self.rect.y += self.speed
+                elif action[i] == 3:
+                    self.rect.x -= self.speed
+                elif action[i] == 4:
+                    self.rect.x += self.speed
 
     def draw_missile(self, ship_number):
         if ship_number:

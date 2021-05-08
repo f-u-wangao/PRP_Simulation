@@ -3,7 +3,6 @@ import game_functions as gf
 from settings import Settings
 from ship import Ship
 from background import Background
-from pygame.sprite import Group
 from game_stats import GameStats
 from button import Button
 from board import Board
@@ -39,6 +38,9 @@ def run_game():
     stats = GameStats()
     game_logic = GameLogic(stats)
     board = Board(screen, stats, game_logic)
+
+    if not settings_vis.control_flag and not settings_vis.is_show:
+        pygame.display.iconify()
 
     # 游戏主循环
     while True:

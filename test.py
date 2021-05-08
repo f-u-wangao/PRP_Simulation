@@ -36,8 +36,12 @@ a = np.random.random()
 print(a)
 
 # %%
-from pygame.sprite import Group
+a = [1, 2, 3]
 
-a = []
-a.append(1)
-print(len(a))
+
+def add(x):
+    x.append(4)
+
+
+add(a)
+print(a)
