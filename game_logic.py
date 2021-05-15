@@ -15,6 +15,7 @@ class GameLogic:
         self.ship_enemy = {'location': np.array([0, 0], dtype=int), 'missile': 4}
         self.missile_location = [{}, {}]
         self.missile_travelled = [{}, {}]
+        self.missile_is_show = [{}, {}]
         self.control_flag = self.settings_vis.control_flag
         if not self.control_flag:
             self.agent = [Agent(), Agent()]  # 0 - enemy, 1 - self
@@ -77,6 +78,7 @@ class GameLogic:
             ship['missile'] -= 1
             self.missile_location[ship_number][3 - ship['missile']] = copy.copy(ship['location'])
             self.missile_travelled[ship_number][3 - ship['missile']] = 0
+            self.missile_is_show[ship_number][3 - ship['missile']] = True
 
         self.stats.next_operation()
 
@@ -92,6 +94,7 @@ class GameLogic:
         action = [0, 0]
 
         if self.missile_travelled[ship_number][missile_number] == -1:
+            self.missile_is_show[ship_number][missile_number] = False
             return game_over, action
 
         # print("goal_location:", goal_location, "self_location:", self_location)
@@ -100,11 +103,13 @@ class GameLogic:
             game_over = self.is_hit(self.missile_travelled[ship_number][missile_number] + distance)
             self.missile_location[ship_number][missile_number] = np.array([-1, -1], dtype=int)
             self.missile_travelled[ship_number][missile_number] = -1
+            self.missile_is_show[ship_number][missile_number] = False
             return game_over, action
 
         if self.missile_travelled[ship_number][missile_number] >= 20:
             self.missile_location[ship_number][missile_number] = np.array([-1, -1], dtype=int)
             self.missile_travelled[ship_number][missile_number] = -1
+            self.missile_is_show[ship_number][missile_number] = False
             return False, action
 
         for i in range(2):
@@ -147,14 +152,14 @@ class GameLogic:
 
     def is_hit(self, missile_travelled):
         if missile_travelled <= 2:
-            print("Hit! Too near.")
+            # print("Hit! Too near.")
             return True
         else:
             tmp = np.random.random()
             if tmp > missile_travelled / 20 - 0.1:
-                print("Hit! p =", 1.1 - missile_travelled / 20)
+                # print("Hit! p =", 1.1 - missile_travelled / 20)
                 return True
-        print("Miss! p =", 1.1 - missile_travelled / 20)
+        # print("Miss! p =", 1.1 - missile_travelled / 20)
         return False
 
     def show(self):
@@ -166,5 +171,4 @@ class GameLogic:
         self.ship_enemy = {'location': np.array([0, 0], dtype=int), 'missile': 4}
         self.missile_location = [{}, {}]
         self.missile_travelled = [{}, {}]
-        if not self.control_flag:
-            self.agent = [Agent(), Agent()]  # 0 - enemy, 1 - self
+        self.missile_is_show = [{}, {}]

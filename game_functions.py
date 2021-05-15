@@ -112,7 +112,7 @@ def check_agent_actions(settings_vis, screen, stats, ship_self, ship_enemy, miss
 
     elif stats.operation == 4:
         for missile_number in range(settings_vis.missile_allowed - game_logic.ship_self['missile']):
-            if not missiles_self[missile_number].is_show:
+            if not game_logic.missile_is_show[1][missile_number]:
                 continue
             game_over, action = game_logic.trace(1, missile_number)
             if game_over:
@@ -130,7 +130,7 @@ def check_agent_actions(settings_vis, screen, stats, ship_self, ship_enemy, miss
 
     elif stats.operation == 6:
         for missile_number in range(settings_vis.missile_allowed - game_logic.ship_enemy['missile']):
-            if not missiles_enemy[missile_number].is_show:
+            if not game_logic.missile_is_show[0][missile_number]:
                 continue
             game_over, action = game_logic.trace(0, missile_number)
             if game_over:
@@ -220,14 +220,14 @@ def fire_missile(settings_vis, screen, ship, missiles):
 # 如果导弹都用完且场上没有导弹存在，平局
 def check_draw(stats, ship_self, ship_enemy, missiles_self, missiles_enemy, game_logic):
     if not game_logic.ship_self['missile'] and not game_logic.ship_enemy['missile']:
-        draw_flag = 0
+        draw_flag = 1
         for missile in missiles_self:
             if missile.is_show:
-                draw_flag = 1
+                draw_flag = 0
         for missile in missiles_enemy:
             if missile.is_show:
-                draw_flag = 1
-        if draw_flag == 0:
+                draw_flag = 0
+        if draw_flag == 1:
             print("Draw!")
             reset_all(stats, ship_self, ship_enemy, missiles_self, missiles_enemy, game_logic)
 
